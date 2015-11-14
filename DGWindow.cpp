@@ -1,5 +1,7 @@
+#include <assert.h>
 #include <iostream>
 #include <stdlib.h>
+#include <vector>
 
 #include "DGWindow.h"
 
@@ -7,7 +9,7 @@ DGWindow *globalWindow = NULL;
 
 struct DGWindowState
 {
-	std::unique_ptr<sf::RenderWindow> sfmlWindow;
+	sf::RenderWindow* sfmlWindow;
 	std::vector<DGKey> keyPresses;
 	std::vector<DGMouseClick> mouseClicks;
 };
@@ -15,10 +17,7 @@ struct DGWindowState
 DGWindow::DGWindow(std::string title, int width, int height)
 	: state(new DGWindowState)
 {
-	if (globalWindow) {
-		std::cerr << "You are trying to create a second DGWindow object!" << std::endl;
-		exit(1);
-	}
+	assert(globalWindow == nullptr);
 	globalWindow = this;
 	state->sfmlWindow = new sf::RenderWindow(sf::VideoMode(width, height), title);
 	state->sfmlWindow->setVerticalSyncEnabled(true);
@@ -29,33 +28,43 @@ bool DGWindow::isOpen()
 	return state->sfmlWindow->isOpen();
 }
 
-bool DGWindow::isKeyDown(DGKey key)
+bool DGWindow::isKeyPressed(DGKey key)
 {
-	return false;
+	sf::Keyboard::Key sfmlKey = static_cast<sf::Keyboard::Key>(key);
+	return sf::Keyboard::isKeyPressed(sfmlKey);
 }
 
 bool DGWindow::hasNewKeyPress()
 {
-	return false;
+	return state->keyPresses.size() > 0;
 }
+
 DGKey DGWindow::getKeyPress()
 {
-	return DGEscapeKey;
+	assert(hasNewKeyPress());
+	DGKey key = state->keyPresses.front();
+	state->keyPresses.erase(state->keyPresses.cbegin());
+	return key;
 }
 
 bool DGWindow::hasNewMouseClick()
 {
-	return false;
+	return state->mouseClicks.size() > 0;
 }
+
 DGMouseClick DGWindow::getMouseClick()
 {
-	return { 0, 0, DGLeftMouseButton };
+	assert(hasNewMouseClick());
+	DGMouseClick click = state->mouseClicks.front();
+	state->mouseClicks.erase(state->mouseClicks.cbegin());
+	return click;
 }
 
 void DGWindow::clear()
 {
 	state->sfmlWindow->clear();
 }
+
 void DGWindow::display()
 {
 	state->sfmlWindow->display();
@@ -64,21 +73,35 @@ void DGWindow::display()
 	state->mouseClicks.clear();
 
 	sf::Event event;
-	while (window.pollEvent(event))
+	DGKey key;
+	DGMouseClick click;
+	while (state->sfmlWindow->pollEvent(event))
 	{
-		switch (event.type) {
+		switch (event.type)
+		{
 		case sf::Event::Closed:
 			close();
 			break;
 		case sf::Event::KeyPressed:
-			keyPresses.push_back(event.key.code);
+			key = static_cast<DGKey>(event.key.code);
+			state->keyPresses.push_back(key);
 			break;
 		case sf::Event::MouseButtonPressed:
-			mouseClicks.push_back({ event.mouse.x, event.mouse.y, event.mouse.button });
+			click.x = event.mouseButton.x;
+			click.y = event.mouseButton.y;
+			click.button = static_cast<DGMouseButton>(event.mouseButton.button);
+			if (click.button == DGLeftMouseButton ||
+			    click.button == DGRightMouseButton)
+			{
+				state->mouseClicks.push_back(click);
+			}
+			break;
+		default:
 			break;
 		}
 	}
 }
+
 void DGWindow::close()
 {
 	state->sfmlWindow->close();

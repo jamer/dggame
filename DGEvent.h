@@ -4,7 +4,7 @@
 #include <SFML/Window/Event.hpp>
 
 enum DGKey {
-	DGEscapeKey = sf::Keyboard::Key::Escape,
+	DGEscapeKey = sf::Keyboard::Escape,
 	DGLeftShiftKey = sf::Keyboard::LShift,
 	DGUpArrowKey = sf::Keyboard::Up,
 	DGDownArrowKey = sf::Keyboard::Down,

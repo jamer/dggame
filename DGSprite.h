@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-class sf::Sprite;
+#include <SFML/Graphics.hpp>
 
 class DGSprite
 {
@@ -21,7 +21,7 @@ class DGSprite
 	bool overlapsWith(DGSprite& otherSprite);
 
 private:
-	std::shared_ptr<sf::Sprite> sfmlSprite;
+	sf::Sprite* sfmlSprite;
 };
 
 #endif

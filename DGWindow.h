@@ -5,6 +5,8 @@
 #include <string>
 #include "DGEvent.h"
 
+#include <SFML/Graphics.hpp>
+
 struct DGWindowState;
 
 class DGWindow
