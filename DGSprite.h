@@ -8,15 +8,20 @@ class sf::Sprite;
 
 class DGSprite
 {
-	DGSprite(std::string path);
+	DGSprite(std::string path, float x, float y);
 
 	void draw();
 
-	void useCenteredCoordinates();
 	void setPosition(float x, float y);
+	void move(float x, float y);
+
+	float getXPosition();
+	float getYPosition();
+
+	bool overlapsWith(DGSprite& otherSprite);
 
 private:
-	std::unique_ptr<sf::Sprite> sfmlSprite;
+	std::shared_ptr<sf::Sprite> sfmlSprite;
 };
 
 #endif

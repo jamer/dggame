@@ -3,19 +3,26 @@
 
 #include <SFML/Window/Event.hpp>
 
-enum DGEventType {
-	DGKeyPressEvent = sf::Event::EventType::KeyPressed
-};
-
 enum DGKey {
-	DGEscapeKey = sf::Keyboard::Key::Escape
+	DGEscapeKey = sf::Keyboard::Key::Escape,
+	DGLeftShiftKey = sf::Keyboard::LShift,
+	DGUpArrowKey = sf::Keyboard::Up,
+	DGDownArrowKey = sf::Keyboard::Down,
+	DGLeftArrowKey = sf::Keyboard::Left,
+	DGRightArrowKey = sf::Keyboard::Right,
+	DGZKey = sf::Keyboard::Z
 };
 
-class DGEvent
+enum DGMouseButton
 {
-public:
-	DGEventType type;
-	DGKey key;
+	DGLeftMouseButton = sf::Mouse::Left,
+	DGRightMouseButton = sf::Mouse::Right
+};
+
+struct DGMouseClick
+{
+	int x, y;
+	DGMouseButton button;
 };
 
 #endif

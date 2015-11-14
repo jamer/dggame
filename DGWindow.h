@@ -5,7 +5,7 @@
 #include <string>
 #include "DGEvent.h"
 
-class sf::RenderWindow;
+struct DGWindowState;
 
 class DGWindow
 {
@@ -13,15 +13,22 @@ public:
 	DGWindow(std::string title, int width, int height);
 
 	bool isOpen();
-	bool hasEvent();
-	DGEvent getEvent();
+
+	bool isKeyPressed(DGKey key);
+
+	bool hasNewKeyPress();
+	DGKey getKeyPress();
+
+	bool hasNewMouseClick();
+	DGMouseClick getMouseClick();
 
 	void clear();
 	void display();
 	void close();
 
 private:
-	std::unique_ptr<sf::RenderWindow> sfmlWindow;
+	DGWindowState* state;
 };
+
 
 #endif
